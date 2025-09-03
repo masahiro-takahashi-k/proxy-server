@@ -19,7 +19,31 @@ app.get("/", (req, res) => {
     // console.log(params)
 })
 
-//ChatGPTケース
+//ChatGPTケース（Weather）
+// app.use("/weather-data", limiter ,createProxyMiddleware({
+//     target: process.env.BASE_API_URL_W,
+//     changeOrigin: true,
+//     pathRewrite: {
+//         '^/$' : '/v1/current.json?key=cf8507c93b644d4691185421252908&q=${city}&aqi=no'
+//         // '^/$' : '/v1/current.json?key=cf8507c93b644d4691185421252908&q=tokyo&aqi=no'
+//         // "^/corona-tracker-world-data": "/api/corona-tracker/summary",
+//     },
+//     logLevel: "debug",
+// }))
+
+//ChatGPTケース（Weather）
+app.use("/weather-data", (req, res, next) => {
+    const city = url.parse(req.url).query
+    createProxyMiddleware({
+        target: process.env.BASE_API_URL_W,
+        changeOrigin: true,
+        pathRewrite: {
+           '^/$' : `/v1/current.json?key=cf8507c93b644d4691185421252908&q=${city}&aqi=no`
+        },
+    })(req, res, next)
+})
+
+//ChatGPTケース（Corona）
 app.use("/corona-tracker-world-data", limiter ,createProxyMiddleware({
     // target: "https://monotein-books.vercel.app",
     target: process.env.BASE_API_URL,
