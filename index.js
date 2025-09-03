@@ -31,19 +31,25 @@ app.use("/weather-data", (req, res, next) => {
     })(req, res, next)
 })
 
-//ChatGPTケース（Weather）
-// app.use("/weather-data", (req, res, next) => {
-//     const city = url.parse(req.url).query
-//     createProxyMiddleware({
-//         target: process.env.BASE_API_URL_W,
-//         changeOrigin: true,
-//         pathRewrite: {
-//            '^/$' : `/v1/current.json?key=cf8507c93b644d4691185421252908&q=${city}&aqi=no`
-//         },
-//     })(req, res, next)
-// })
+//オリジナル（コロナカントリーデータ）
+app.use("/corona-tracker-country-data", (req, res, next) => {
+    const city = url.parse(req.url).query
+    console.log("URL=", `${process.env.BASE_API_URL_CORONA_COUNTRY}/japan`)
+    createProxyMiddleware({
+        target: `${process.env.BASE_API_URL_CORONA_COUNTRY}/${city}`,
+        //target: `${process.env.BASE_API_URL_CORONA_COUNTRY}`,
+        changeOrigin: true,
+        pathRewrite: {
+            [`^/corona-tracker-country-data`]: "",
+        },
+        // pathRewrite: (path, req) => {
+        // // 常に固定のエンドポイントに変換
+        //     return "/japan"
+        // },
+    })(req, res, next)
+})
 
-//ChatGPTケース（Corona）
+//ChatGPTケース（コロナワールドデータ）
 app.use("/corona-tracker-world-data", limiter ,createProxyMiddleware({
     // target: "https://monotein-books.vercel.app",
     target: process.env.BASE_API_URL,
