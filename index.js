@@ -36,16 +36,17 @@ app.use("/corona-tracker-country-data", (req, res, next) => {
     const city = url.parse(req.url).query
     console.log("URL=", `${process.env.BASE_API_URL_CORONA_COUNTRY}/japan`)
     createProxyMiddleware({
-        target: `${process.env.BASE_API_URL_CORONA_COUNTRY}/${city}`,
-        //target: `${process.env.BASE_API_URL_CORONA_COUNTRY}`,
+        // target: `${process.env.BASE_API_URL_CORONA_COUNTRY}/${city}`,
+        target: `${process.env.BASE_API_URL_CORONA_COUNTRY}`,
         changeOrigin: true,
-        pathRewrite: {
-            [`^/corona-tracker-country-data`]: "",
-        },
-        // pathRewrite: (path, req) => {
-        // // 常に固定のエンドポイントに変換
-        //     return "/japan"
+        // pathRewrite: {
+        //     [`^/corona-tracker-country-data`]: "",
         // },
+        pathRewrite: (path, req) => {
+        // 常に固定のエンドポイントに変換
+            // return "/japan"
+            return `/${city}`
+        },
     })(req, res, next)
 })
 
